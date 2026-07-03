@@ -32,20 +32,24 @@ permalink: /blog/
       <button class="filter-tab" data-cat="personal">Personal Growth</button>
     </div>
 
+    {% assign categories_order = "Engineering,Cybersecurity,Product,Psychology,Entrepreneurship,Personal Growth" | split: "," %}
     {% if site.posts.size > 0 %}
     <div class="posts-grid" id="postsGrid">
-      {% for post in site.posts %}
-      <article class="post-card" data-category="{{ post.categories | join: ' ' | downcase }}">
-        <div class="post-card__category">{{ post.categories | first | default: "General" }}</div>
-        <a href="{{ post.url | relative_url }}" style="color:inherit;">
-          <h2 class="post-card__title">{{ post.title }}</h2>
-        </a>
-        <p class="post-card__excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
-        <div class="post-card__meta">
-          <span>{{ post.date | date: "%b %d, %Y" }}</span>
-          {% if post.read_time %}<span>{{ post.read_time }} min read</span>{% endif %}
-        </div>
-      </article>
+      {% for category in categories_order %}
+        {% assign cat_posts = site.posts | where_exp: "post", "post.categories contains category" %}
+        {% for post in cat_posts %}
+        <article class="post-card" data-category="{{ post.categories | join: ' ' | downcase }}">
+          <div class="post-card__category">{{ post.categories | first | default: "General" }}</div>
+          <a href="{{ post.url | relative_url }}" style="color:inherit;">
+            <h2 class="post-card__title">{{ post.title }}</h2>
+          </a>
+          <p class="post-card__excerpt">{{ post.excerpt | strip_html | truncate: 120 }}</p>
+          <div class="post-card__meta">
+            <span>{{ post.date | date: "%b %d, %Y" }}</span>
+            {% if post.read_time %}<span>{{ post.read_time }} min read</span>{% endif %}
+          </div>
+        </article>
+        {% endfor %}
       {% endfor %}
     </div>
     {% else %}
